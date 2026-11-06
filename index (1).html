@@ -1,0 +1,2536 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Alberto Watch Company - Explore watches, clocks, prices, technology and customer support.">
+    <title>Alberto Watch Company</title>
+
+    <!-- GOOGLE FONTS -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+
+    <!-- BOOTSTRAP CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        /* ================= ROOT COLORS ================= */
+        
+         :root {
+            --ink: #123524;
+            --green: #356B4A;
+            --mint: #7BC69A;
+            --cream: #EAF3E9;
+            --background: #F8FBF7;
+            --muted: #66766B;
+            --white: #FFFFFF;
+        }
+        /* ================= GLOBAL ================= */
+        
+        * {
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+            scroll-margin-top: 130px;
+        }
+        
+        input[type="number"] {
+            caret-color: transparent;
+        }
+        
+        body {
+            margin: 0;
+            padding-bottom: 50px;
+            /* space for the ticker */
+            background: var(--background);
+            color: var(--ink);
+            font-family: "DM Sans", sans-serif;
+        }
+        
+        h1,
+        h2,
+        h3,
+        h4 {
+            font-family: "Playfair Display", serif;
+        }
+        /* ================= SPA VIEWS ================= */
+        /* Only the active view is shown. Views fade out, then the next one fades in. */
+        
+        .view {
+            display: none;
+        }
+        
+        .view.is-active {
+            display: block;
+            animation: viewFadeIn 0.45s ease;
+        }
+        
+        .view.is-leaving {
+            display: block;
+            pointer-events: none;
+            animation: viewFadeOut 0.25s ease forwards;
+        }
+        
+        @keyframes viewFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes viewFadeOut {
+            from {
+                opacity: 1;
+            }
+            to {
+                opacity: 0;
+            }
+        }
+        /* ================= HEADER (top bar + navbar) ================= */
+        
+        .site-header {
+            z-index: 1040;
+        }
+        /* Top bar: logo on the left, visitor count on the top right */
+        
+        .top-bar {
+            background: #0B1F16;
+            border-bottom: 1px solid #1F4A36;
+        }
+        
+        .top-bar-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 8px;
+            padding-bottom: 8px;
+        }
+        
+        .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: white !important;
+            font-weight: 700;
+            padding: 0;
+        }
+        
+        .logo-img {
+            width: 45px;
+            height: 45px;
+            object-fit: contain;
+        }
+        
+        .brand-text {
+            font-size: 15px;
+            letter-spacing: 1px;
+        }
+        
+        .visitor-count {
+            flex-shrink: 0;
+            color: #EAF3E9;
+            background-color: #1B4632;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 12px;
+            border: 1px solid #7BC69A;
+            border-radius: 20px;
+            white-space: nowrap;
+        }
+        /* Navbar: menu, cart and sign up */
+        
+        .navbar {
+            background: #102B20;
+            box-shadow: 0 4px 18px #0002;
+            padding-top: 6px;
+            padding-bottom: 6px;
+        }
+        
+        .navbar-nav .nav-link {
+            color: #EAF3E9 !important;
+            font-weight: 600;
+            border-radius: 7px;
+            padding: 9px 10px !important;
+            opacity: 0.85;
+            transition: color 0.4s ease, opacity 0.4s ease, background 0.4s ease, transform 0.4s ease;
+            animation: menuFadeIn 0.6s ease backwards;
+        }
+        
+        .navbar-nav .nav-link:hover {
+            color: #102B20 !important;
+            background: var(--mint);
+            opacity: 1;
+            transform: translateY(-2px);
+        }
+        
+        .navbar-nav .nav-link:active {
+            opacity: 0.6;
+        }
+        
+        .navbar-nav .nav-link.active {
+            color: #102B20 !important;
+            background: var(--mint);
+            opacity: 1;
+        }
+        /* Fade-out when the mobile menu closes */
+        
+        .navbar-nav.is-fading-out .nav-link {
+            animation: menuFadeOut 0.35s ease forwards;
+        }
+        
+        @media (min-width: 992px) {
+            .navbar-nav .nav-link {
+                padding: 9px 7px !important;
+                font-size: .92rem;
+            }
+            .navbar .container {
+                display: flex;
+                align-items: center;
+            }
+            .navbar-collapse {
+                order: 2;
+                flex-grow: 1;
+            }
+            .nav-actions {
+                order: 3;
+            }
+            .navbar-toggler {
+                order: 4;
+            }
+        }
+        
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-left: auto;
+        }
+        
+        .nav-cart-btn {
+            flex-shrink: 0;
+            font-weight: 700;
+            font-size: 13px;
+            padding: 5px 12px;
+            white-space: nowrap;
+        }
+        
+        .nav-cart-btn .badge {
+            font-size: 11px;
+        }
+        
+        @keyframes menuFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes menuFadeOut {
+            from {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            to {
+                opacity: 0;
+                transform: translateY(-8px);
+            }
+        }
+        /* ================= BUTTONS ================= */
+        
+        .btn-green {
+            background: var(--green);
+            border: 1px solid var(--green);
+            color: white;
+            font-weight: 700;
+            padding: 10px 18px;
+        }
+        
+        .btn-green:hover {
+            background: var(--ink);
+            border-color: var(--ink);
+            color: white;
+        }
+        
+        .btn-mint {
+            background: var(--mint);
+            border: 1px solid var(--mint);
+            color: var(--ink);
+            font-weight: 700;
+            padding: 10px 18px;
+        }
+        
+        .btn-mint:hover {
+            background: var(--mint);
+            border-color: var(--mint);
+            color: var(--ink);
+        }
+        /* ================= HERO ================= */
+        
+        .hero {
+            min-height: 490px;
+            display: flex;
+            align-items: center;
+            color: white;
+            background: linear-gradient(90deg, rgba(8, 30, 20, .93), rgba(8, 30, 20, .42)), url("./02.jpg") center/cover;
+        }
+        
+        .hero-inner {
+            padding: 75px 0;
+        }
+        
+        .hero h1 {
+            max-width: 750px;
+            font-size: clamp(2.5rem, 5vw, 4.8rem);
+            line-height: 1.1;
+            margin: 16px 0;
+        }
+        
+        .hero p {
+            max-width: 560px;
+            color: #E2EBE4;
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+        
+        .eyebrow {
+            color: #72BD8D;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-size: .8rem;
+            font-weight: 700;
+        }
+        /* ================= SECTIONS ================= */
+        
+        .section-pad {
+            padding: 65px 0;
+        }
+        
+        .section-heading {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+        
+        .section-heading h2 {
+            font-size: clamp(2rem, 3vw, 3rem);
+            margin: 8px 0;
+        }
+        
+        .section-heading p {
+            color: var(--muted);
+            max-width: 650px;
+            margin: 0 auto;
+        }
+        
+        .page-banner {
+            background: var(--cream);
+            padding: 45px 0;
+            border-bottom: 1px solid #DCE8DD;
+        }
+        
+        .page-banner h1 {
+            font-size: clamp(2rem, 4vw, 3.2rem);
+            margin-bottom: 8px;
+        }
+        
+        .page-banner p {
+            color: var(--muted);
+            margin-bottom: 0;
+        }
+        /* ================= CARDS ================= */
+        
+        .feature-card,
+        .watch-card,
+        .info-card {
+            height: 100%;
+            border: 2px solid #123524 !important;
+            border-radius: 14px;
+            overflow: hidden;
+            background: white;
+            box-shadow: 0 8px 24px #102B2010;
+            transition: transform .2s, box-shadow .2s;
+        }
+        
+        .feature-card:hover,
+        .watch-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 14px 28px #102B201A;
+        }
+        
+        .info-card {
+            padding: 25px;
+        }
+        
+        .feature-img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+        }
+        
+        .watch-img {
+            width: 100%;
+            height: 230px;
+            object-fit: cover;
+            background: var(--cream);
+        }
+        
+        .watch-body {
+            padding: 20px;
+        }
+        
+        .watch-brand {
+            color: var(--green);
+            font-size: .75rem;
+            font-weight: 700;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+        }
+        
+        .watch-title {
+            font-family: "Playfair Display", serif;
+            font-size: 1.3rem;
+            margin: 7px 0;
+        }
+        
+        .watch-price {
+            font-size: 1.15rem;
+            color: #174B32;
+            font-weight: 700;
+        }
+        
+        .icon-box {
+            width: 48px;
+            height: 48px;
+            display: grid;
+            place-items: center;
+            border-radius: 12px;
+            background: #E0EFE2;
+            color: var(--green);
+            font-size: 1.4rem;
+            flex-shrink: 0;
+        }
+        /* ================= CATEGORY BUTTONS ================= */
+        
+        .category-btn {
+            display: inline-block;
+            border: 1px solid #C9D9CC;
+            background: white;
+            color: #234B35;
+            border-radius: 25px;
+            padding: 9px 16px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: .2s;
+        }
+        
+        .category-btn:hover,
+        .category-btn.active {
+            background: var(--mint);
+            border-color: var(--mint);
+            color: var(--ink);
+        }
+        /* ================= FORMS ================= */
+        
+        .form-control,
+        .form-select {
+            padding: 11px;
+            border-color: #C9D9CC;
+        }
+        
+        .form-control:focus,
+        .form-select:focus {
+            border-color: var(--green);
+            box-shadow: 0 0 0 .2rem #7BC69A40;
+        }
+        
+        .success-icon {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto;
+            border-radius: 50%;
+            background: #198754;
+            color: #fff;
+            font-size: 2rem;
+            line-height: 64px;
+        }
+        /* ================= PRODUCT POPUP IMAGE ================= */
+        
+        #popupProductImg {
+            display: block;
+            width: 100%;
+            max-width: 320px;
+            height: 260px;
+            object-fit: contain;
+            margin: 0 auto 16px;
+            background: var(--cream);
+            border-radius: 12px;
+        }
+        /* ================= CART PANEL ================= */
+        
+        .offcanvas.offcanvas-end {
+            z-index: 1055;
+        }
+        
+        .offcanvas-backdrop {
+            z-index: 1050;
+        }
+        
+        .toast-container {
+            z-index: 1100;
+        }
+        
+        .cart-item-remove {
+            font-size: .85rem;
+        }
+        /* ================= PRICE TABLE ================= */
+        
+        .table thead th {
+            background: #17432E;
+            color: white;
+            border: 0;
+        }
+        
+        .table tbody tr:nth-child(even) {
+            background: #F0F6EF;
+        }
+        
+        .table td,
+        .table th {
+            padding: 14px 16px;
+            vertical-align: middle;
+        }
+        /* ================= GALLERY ================= */
+        
+        .gallery-img {
+            width: 100%;
+            height: 240px;
+            object-fit: cover;
+            border-radius: 12px;
+        }
+        /* ================= FOOTER ================= */
+        
+        footer {
+            background: #102B20;
+            color: #DCE9DF;
+            padding: 42px 0 75px;
+        }
+        
+        footer h3 {
+            color: white;
+        }
+        
+        footer a {
+            color: #A9DDB8;
+            text-decoration: none;
+        }
+        
+        footer a:hover {
+            color: white;
+            text-decoration: underline;
+        }
+        
+        .footer-line {
+            border-color: #54715E;
+        }
+        /* ================= BOTTOM TICKER (CSS animation, no marquee) ================= */
+        
+        .ticker {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1030;
+            background-color: #102B20;
+            color: #EAF3E9;
+            padding: 12px 0;
+            font-size: 14px;
+            font-weight: 500;
+            overflow: hidden;
+            white-space: nowrap;
+            border-top: 2px solid #7BC69A;
+        }
+        
+        .ticker span {
+            color: #7BC69A;
+            font-weight: 600;
+        }
+        
+        .ticker-track {
+            display: inline-block;
+            padding-left: 100%;
+            animation: ticker-scroll 35s linear infinite;
+        }
+        
+        .ticker:hover .ticker-track {
+            animation-play-state: paused;
+        }
+        
+        @keyframes ticker-scroll {
+            from {
+                transform: translateX(0);
+            }
+            to {
+                transform: translateX(-100%);
+            }
+        }
+        /* ================= RESPONSIVE ================= */
+        
+        @media (max-width: 991px) {
+            .navbar-nav {
+                padding-top: 8px;
+            }
+            .hero {
+                min-height: 420px;
+            }
+        }
+        
+        @media (max-width: 575px) {
+            .brand-text {
+                font-size: 13px;
+            }
+            .visitor-count {
+                font-size: 11px;
+                padding: 3px 9px;
+            }
+            .section-pad {
+                padding: 45px 0;
+            }
+            .hero-inner {
+                padding: 55px 12px;
+            }
+            .watch-img {
+                height: 210px;
+            }
+            .gallery-img {
+                height: 190px;
+            }
+            .ticker {
+                font-size: .76rem;
+            }
+            .card-actions .btn {
+                font-size: .9rem;
+                padding: 9px 8px;
+            }
+        }
+        /* Accessibility */
+        
+        @media (prefers-reduced-motion: reduce) {
+            .ticker-track {
+                animation: none;
+                padding-left: 0;
+            }
+            .view.is-active,
+            .view.is-leaving {
+                animation: none;
+            }
+            .navbar-nav.is-fading-out .nav-link {
+                animation: none;
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- HEADER: top bar (logo + visitor count) and navbar -->
+    <header class="site-header sticky-top">
+
+        <!-- TOP BAR: logo on the left, visitor count on the top right -->
+        <div class="top-bar">
+            <div class="container top-bar-inner">
+                <a class="navbar-brand" href="#/home">
+                    <img src="./Alberto Watch Company Logo.png" class="logo-img" alt="Alberto Watch Company Logo">
+                    <span class="brand-text">
+          ALBERTO
+          <small class="d-block" style="font-size:10px;letter-spacing:2px;color:#7BC69A">
+            WATCH COMPANY
+          </small>
+        </span>
+                </a>
+
+                <div class="top-bar-actions">
+                    <span id="visitorCount" class="visitor-count">Visitors: 0</span>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- NAVBAR: menu, cart, sign up, mobile toggle -->
+        <nav class="navbar navbar-expand-lg navbar-dark">
+            <div class="container">
+
+                <div class="collapse navbar-collapse" id="mainNav">
+                    <ul class="navbar-nav ms-auto me-3">
+                        <li class="nav-item"><a class="nav-link" href="#/home">Home</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#/products">Products</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#/technology">Technology</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#/prices">Price List</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#/gallery">Gallery</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#/store">Store Locator</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#/support">Support</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#/about">About Us</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#/contact">Contact</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#/sitemap">Site Map</a></li>
+                    </ul>
+                </div>
+
+                <div class="nav-actions">
+                    <!-- CART BUTTON -->
+                    <button type="button" id="cartToggle" class="btn btn-mint nav-cart-btn" data-bs-toggle="offcanvas" data-bs-target="#cartPanel" aria-controls="cartPanel">
+          Cart <span id="cartCount" class="badge bg-success ms-1">0</span>
+        </button>
+
+                    <button type="button" id="loginBtn" class="btn btn-outline-light auth-btn">Login</button>
+                    <button type="button" id="authBtn" class="btn btn-outline-light auth-btn">Sign Up</button>
+
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav" aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+                </div>
+
+            </div>
+        </nav>
+
+    </header>
+
+    <!-- CART PANEL (slides in from the right) -->
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="cartPanel" aria-labelledby="cartPanelLabel">
+        <div class="offcanvas-header">
+            <h2 class="h5 mb-0" id="cartPanelLabel">Your Cart</h2>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body d-flex flex-column">
+            <div id="cartItems" class="flex-grow-1"></div>
+            <div class="border-top pt-3 mt-3">
+                <div class="d-flex justify-content-between fw-bold mb-3">
+                    <span>Total</span>
+                    <span id="cartTotal">Rs. 0</span>
+                </div>
+                <button type="button" id="checkoutBtn" class="btn btn-green w-100 mb-2">Checkout</button>
+                <button type="button" id="clearCart" class="btn btn-outline-danger w-100">Clear Cart</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADD TO CART TOAST -->
+    <div class="toast-container position-fixed end-0 p-3" style="top:150px;">
+        <div id="cartToast" class="toast align-items-center text-bg-success border-0" role="status" aria-live="polite" aria-atomic="true">
+            <div class="d-flex align-items-center">
+                <div class="toast-body" id="cartToastBody">Added to cart</div>
+                <button type="button" class="btn btn-sm btn-light me-2" id="viewCartBtn">View Cart</button>
+                <button type="button" class="btn-close btn-close-white me-2" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+
+    <main>
+
+        <!-- VIEW: HOME -->
+        <section class="view" id="view-home">
+
+            <div class="hero">
+                <div class="container hero-inner">
+                    <div class="eyebrow">Precision • Craftsmanship • Style</div>
+
+                    <h1>Every Second Deserves to Be Exceptional.</h1>
+
+                    <p>
+                        Discover timeless designs, beautiful details and carefully selected watches and clocks for every moment in your life.
+                    </p>
+
+                    <a href="#/products" class="btn btn-mint me-2 mb-2">Explore Watches And Clocks</a>
+                    <a href="#/about" class="btn btn-outline-light me-2 mb-2">Discover Alberto</a>
+                    <a href="#/gallery" class="btn btn-outline-light mb-2">Gallery</a>
+                </div>
+            </div>
+
+            <section class="section-pad">
+                <div class="container">
+
+                    <div class="section-heading">
+                        <div class="eyebrow">Find Your Style</div>
+                        <h2>Explore Our Collections</h2>
+                        <p>
+                            From timeless classics to contemporary designs, discover a watch that fits your style.
+                        </p>
+                    </div>
+
+                    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+
+                        <div class="col">
+                            <div class="feature-card">
+                                <img class="feature-img" src="./07.jpg" alt="Vintage wristwatch">
+                                <div class="p-4">
+                                    <h3 class="h4">Vintage Watches</h3>
+                                    <p class="text-secondary">Classic character and traditional craftsmanship.</p>
+                                    <a href="#/products/vintage-watches" class="btn btn-green">View Vintage</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col">
+                            <div class="feature-card">
+                                <img class="feature-img" src="./02.jpg" alt="Luxury wristwatch">
+                                <div class="p-4">
+                                    <h3 class="h4">Luxury Watches</h3>
+                                    <p class="text-secondary">Elegant timepieces for memorable occasions.</p>
+                                    <a href="#/products/luxury-watches" class="btn btn-green">View Luxury</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col">
+                            <div class="feature-card">
+                                <img class="feature-img" src="./43.jpg" alt="Smart watch">
+                                <div class="p-4">
+                                    <h3 class="h4">Smart Watches</h3>
+                                    <p class="text-secondary">Modern convenience for everyday routines.</p>
+                                    <a href="#/products/smart-watches" class="btn btn-green">View Smart Watches</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col">
+                            <div class="feature-card">
+                                <img class="feature-img" src="./05.jpg" alt="Black sport watch">
+                                <div class="p-4">
+                                    <h3 class="h4">Sport Watches</h3>
+                                    <p class="text-secondary">Bold designs for active lifestyles and everyday adventures.</p>
+                                    <a href="#/products/sport-watches" class="btn btn-green">View Sport Watches</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col">
+                            <div class="feature-card">
+                                <img class="feature-img" src="./10.jpg" alt="Classic black watch">
+                                <div class="p-4">
+                                    <h3 class="h4">Classic Watches</h3>
+                                    <p class="text-secondary">Timeless styles with an elegant and polished finish.</p>
+                                    <a href="#/products/dress-watches" class="btn btn-green">View Classic Watches</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col">
+                            <div class="feature-card">
+                                <img class="feature-img" src="./89.jpg" alt="Royal crystal clock">
+                                <div class="p-4">
+                                    <h3 class="h4">Royal Clocks</h3>
+                                    <p class="text-secondary">Elegant clocks designed to enhance your interiors.</p>
+                                    <a href="#/products/royal-clocks" class="btn btn-green">View Royal Clocks</a>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+
+            <section class="section-pad" style="background:var(--cream)">
+                <div class="container text-center">
+                    <div class="eyebrow">The Alberto Promise</div>
+                    <h2 class="mt-2 mb-3">A Timepiece for Every Story</h2>
+
+                    <p class="text-secondary mx-auto" style="max-width:720px">
+                        Explore our watches and clocks, compare listed prices, learn about timekeeping technology and contact us for assistance.
+                    </p>
+
+                    <a href="#/prices" class="btn btn-green">View Price List</a>
+                </div>
+            </section>
+
+        </section>
+
+        <!-- VIEW: PRODUCTS -->
+        <section class="view" id="view-products">
+
+            <div class="page-banner">
+                <div class="container">
+                    <h1>Our Watches And Clocks Collection</h1>
+                    <p>Choose a category and explore our watches and clocks.</p>
+                </div>
+            </div>
+
+            <div class="section-pad">
+                <div class="container">
+
+                    <!-- CATEGORY OPTIONS (each one is a link with its own hash) -->
+                    <div class="d-flex flex-wrap justify-content-center gap-2 mb-5">
+                        <a href="#/products/all-watches" class="category-btn active">All Watches</a>
+                        <a href="#/products/vintage-watches" class="category-btn">Vintage Watches</a>
+                        <a href="#/products/luxury-watches" class="category-btn">Luxury Watches</a>
+                        <a href="#/products/smart-watches" class="category-btn">Smart Watches</a>
+                        <a href="#/products/sport-watches" class="category-btn">Sport Watches</a>
+                        <a href="#/products/dress-watches" class="category-btn">Classic Watches</a>
+                        <a href="#/products/royal-clocks" class="category-btn">Royal Clocks</a>
+                    </div>
+
+                    <!-- ALL WATCHES -->
+                    <h2 id="all-watches" class="mb-4">All Watches</h2>
+
+                    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+
+                        <div class="col">
+                            <div class="watch-card">
+                                <img class="watch-img" src="./01.jpg" alt="Submariner Date watch">
+                                <div class="watch-body">
+                                    <div class="watch-brand">Rolex · Luxury</div>
+                                    <h3 class="watch-title">Submariner Date</h3>
+                                    <p class="text-secondary">A bold and elegant timepiece with a classic design.</p>
+                                    <div class="watch-price mb-3" data-price="2500000">Rs. 2,500,000</div>
+                                    <div class="card-actions d-flex gap-2">
+                                        <button type="button" class="btn btn-outline-success flex-fill add-to-cart-btn">Add to Cart</button>
+                                        <button type="button" class="btn btn-green flex-fill product-details-btn">Buy Now</button>
+                                    </div>
+                                    <label class="form-label mt-3 d-block">Quantity
+                  <input type="number" class="form-control qty-input" value="1" min="1">
+                </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col">
+                            <div class="watch-card">
+                                <img class="watch-img" src="./02.jpg" alt="Day-Date Classic watch">
+                                <div class="watch-body">
+                                    <div class="watch-brand">Rolex · Luxury</div>
+                                    <h3 class="watch-title">Day-Date Classic</h3>
+                                    <p class="text-secondary">An elegant design for special occasions and formal wear.</p>
+                                    <div class="watch-price mb-3" data-price="3000000">Rs. 3,000,000</div>
+                                    <div class="card-actions d-flex gap-2">
+                                        <button type="button" class="btn btn-outline-success flex-fill add-to-cart-btn">Add to Cart</button>
+                                        <button type="button" class="btn btn-green flex-fill product-details-btn">Buy Now</button>
+                                    </div>
+                                    <label class="form-label mt-3 d-block">Quantity
+                  <input type="number" class="form-control qty-input" value="1" min="1">
+                </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col">
+                            <div class="watch-card">
+                                <img class="watch-img" src="./10.jpg" alt="Black Elegance Watch">
+                                <div class="watch-body">
+                                    <div class="watch-brand">Michael Kors · Classic</div>
+                                    <h3 class="watch-title">Black Elegance</h3>
+                                    <p class="text-secondary">A modern style that complements everyday outfits.</p>
+                                    <div class="watch-price mb-3" data-price="90000">Rs. 90,000</div>
+                                    <div class="card-actions d-flex gap-2">
+                                        <button type="button" class="btn btn-outline-success flex-fill add-to-cart-btn">Add to Cart</button>
+                                        <button type="button" class="btn btn-green flex-fill product-details-btn">Buy Now</button>
+                                    </div>
+                                    <label class="form-label mt-3 d-block">Quantity
+                  <input type="number" class="form-control qty-input" value="1" min="1">
+                </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col">
+                            <div class="watch-card">
+                                <img class="watch-img" src="./06.jpg" alt="Brown-Tone Classic watch">
+                                <div class="watch-body">
+                                    <div class="watch-brand">Michael Kors · Classic</div>
+                                    <h3 class="watch-title">Brown-Tone Classic</h3>
+                                    <p class="text-secondary">A polished black-tone watch for smart and casual looks.</p>
+                                    <div class="watch-price mb-3" data-price="60000">Rs. 60,000</div>
+                                    <div class="card-actions d-flex gap-2">
+                                        <button type="button" class="btn btn-outline-success flex-fill add-to-cart-btn">Add to Cart</button>
+                                        <button type="button" class="btn btn-green flex-fill product-details-btn">Buy Now</button>
+                                    </div>
+                                    <label class="form-label mt-3 d-block">Quantity
+                  <input type="number" class="form-control qty-input" value="1" min="1">
+                </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col">
+                            <div class="watch-card">
+                                <img class="watch-img" src="./43.jpg" alt="Smart Active watch">
+                                <div class="watch-body">
+                                    <div class="watch-brand">Alberto · Smart Watches</div>
+                                    <h3 class="watch-title">Smart Active</h3>
+                                    <p class="text-secondary">A modern watch for daily activities and busy routines.</p>
+                                    <div class="watch-price mb-3" data-price="50000">Rs. 50,000</div>
+                                    <div class="card-actions d-flex gap-2">
+                                        <button type="button" class="btn btn-outline-success flex-fill add-to-cart-btn">Add to Cart</button>
+                                        <button type="button" class="btn btn-green flex-fill product-details-btn">Buy Now</button>
+                                    </div>
+                                    <label class="form-label mt-3 d-block">Quantity
+                  <input type="number" class="form-control qty-input" value="1" min="1">
+                </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col">
+                            <div class="watch-card">
+                                <img class="watch-img" src="./05.jpg" alt="Citizen Eco-Drive Black Sport Watch">
+                                <div class="watch-body">
+                                    <div class="watch-brand">Citizen Eco-Drive · Sport</div>
+                                    <h3 class="watch-title">Black Sport Watch</h3>
+                                    <p class="text-secondary">A bold black design with a modern dial, perfect for everyday wear and active lifestyles.</p>
+                                    <div class="watch-price mb-3" data-price="45000">Rs. 45,000</div>
+                                    <div class="card-actions d-flex gap-2">
+                                        <button type="button" class="btn btn-outline-success flex-fill add-to-cart-btn">Add to Cart</button>
+                                        <button type="button" class="btn btn-green flex-fill product-details-btn">Buy Now</button>
+                                    </div>
+                                    <label class="form-label mt-3 d-block">Quantity
+                  <input type="number" class="form-control qty-input" value="1" min="1">
+                </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col">
+                            <div class="watch-card">
+                                <img class="watch-img" src="./0.7.jpg" alt="Vintage Marine watch">
+                                <div class="watch-body">
+                                    <div class="watch-brand">Bulova · Vintage</div>
+                                    <h3 class="watch-title">Vintage Marine</h3>
+                                    <p class="text-secondary">A timeless look inspired by traditional watchmaking.</p>
+                                    <div class="watch-price mb-3" data-price="89000">Rs. 89,000</div>
+                                    <div class="card-actions d-flex gap-2">
+                                        <button type="button" class="btn btn-outline-success flex-fill add-to-cart-btn">Add to Cart</button>
+                                        <button type="button" class="btn btn-green flex-fill product-details-btn">Buy Now</button>
+                                    </div>
+                                    <label class="form-label mt-3 d-block">Quantity
+                  <input type="number" class="form-control qty-input" value="1" min="1">
+                </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col">
+                            <div class="watch-card">
+                                <img class="watch-img" src="./06.jpg" alt="Precision Style watch">
+                                <div class="watch-body">
+                                    <div class="watch-brand">Bulova · Luxury</div>
+                                    <h3 class="watch-title">Precision Style</h3>
+                                    <p class="text-secondary">A refined timepiece with a bold profile and classic dial.</p>
+                                    <div class="watch-price mb-3" data-price="1800000">Rs. 1,800,000</div>
+                                    <div class="card-actions d-flex gap-2">
+                                        <button type="button" class="btn btn-outline-success flex-fill add-to-cart-btn">Add to Cart</button>
+                                        <button type="button" class="btn btn-green flex-fill product-details-btn">Buy Now</button>
+                                    </div>
+                                    <label class="form-label mt-3 d-block">Quantity
+                  <input type="number" class="form-control qty-input" value="1" min="1">
+                </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col">
+                            <div class="watch-card">
+                                <img class="watch-img" src="./07.jpg" alt="Heritage Classic watch">
+                                <div class="watch-body">
+                                    <div class="watch-brand">Alberto · Vintage</div>
+                                    <h3 class="watch-title">Heritage Classic</h3>
+                                    <p class="text-secondary">Traditional character with an elegant, classic finish.</p>
+                                    <div class="watch-price mb-3" data-price="88000">Rs. 88,000</div>
+                                    <div class="card-actions d-flex gap-2">
+                                        <button type="button" class="btn btn-outline-success flex-fill add-to-cart-btn">Add to Cart</button>
+                                        <button type="button" class="btn btn-green flex-fill product-details-btn">Buy Now</button>
+                                    </div>
+                                    <label class="form-label mt-3 d-block">Quantity
+                  <input type="number" class="form-control qty-input" value="1" min="1">
+                </label>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- VINTAGE WATCHES -->
+                    <h2 id="vintage-watches" class="mt-5 mb-4">Vintage Watches</h2>
+
+                    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+
+                        <div class="col">
+                            <div class="watch-card">
+                                <img class="watch-img" src="./0.7.jpg" alt="Vintage Marine watch">
+                                <div class="watch-body">
+                                    <div class="watch-brand">Bulova</div>
+                                    <h3 class="watch-title">Vintage Marine</h3>
+                                    <p class="text-secondary">Classic styling with traditional details.</p>
+                                    <div class="watch-price mb-3" data-price="89000">Rs. 89,000</div>
+                                    <div class="card-actions d-flex gap-2">
+                                        <button type="button" class="btn btn-outline-success flex-fill add-to-cart-btn">Add to Cart</button>
+                                        <button type="button" class="btn btn-green flex-fill product-details-btn">Buy Now</button>
+                                    </div>
+                                    <label class="form-label mt-3 d-block">Quantity
+                  <input type="number" class="form-control qty-input" value="1" min="1">
+                </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col">
+                            <div class="watch-card">
+                                <img class="watch-img" src="./07.jpg" alt="Heritage Classic watch">
+                                <div class="watch-body">
+                                    <div class="watch-brand">Alberto</div>
+                                    <h3 class="watch-title">Heritage Classic</h3>
+                                    <p class="text-secondary">A timeless design with vintage character.</p>
+                                    <div class="watch-price mb-3" data-price="88000">Rs. 88,000</div>
+                                    <div class="card-actions d-flex gap-2">
+                                        <button type="button" class="btn btn-outline-success flex-fill add-to-cart-btn">Add to Cart</button>
+                                        <button type="button" class="btn btn-green flex-fill product-details-btn">Buy Now</button>
+                                    </div>
+                                    <label class="form-label mt-3 d-block">Quantity
+                  <input type="number" class="form-control qty-input" value="1" min="1">
+                </label>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- LUXURY WATCHES -->
+                    <h2 id="luxury-watches" class="mt-5 mb-4">Luxury Watches</h2>
+
+                    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+
+                        <div class="col">
+                            <div class="watch-card">
+                                <img class="watch-img" src="./01.jpg" alt="Submariner Date watch">
+                                <div class="watch-body">
+                                    <div class="watch-brand">Rolex</div>
+                                    <h3 class="watch-title">Submariner Date</h3>
+                                    <p class="text-secondary">An elegant timepiece with a bold design.</p>
+                                    <div class="watch-price mb-3" data-price="2500000">Rs. 2,500,000</div>
+                                    <div class="card-actions d-flex gap-2">
+                                        <button type="button" class="btn btn-outline-success flex-fill add-to-cart-btn">Add to Cart</button>
+                                        <button type="button" class="btn btn-green flex-fill product-details-btn">Buy Now</button>
+                                    </div>
+                                    <label class="form-label mt-3 d-block">Quantity
+                  <input type="number" class="form-control qty-input" value="1" min="1">
+                </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col">
+                            <div class="watch-card">
+                                <img class="watch-img" src="./02.jpg" alt="Day-Date Classic watch">
+                                <div class="watch-body">
+                                    <div class="watch-brand">Rolex</div>
+                                    <h3 class="watch-title">Day-Date Classic</h3>
+                                    <p class="text-secondary">A refined choice for formal occasions.</p>
+                                    <div class="watch-price mb-3" data-price="3000000">Rs. 3,000,000</div>
+                                    <div class="card-actions d-flex gap-2">
+                                        <button type="button" class="btn btn-outline-success flex-fill add-to-cart-btn">Add to Cart</button>
+                                        <button type="button" class="btn btn-green flex-fill product-details-btn">Buy Now</button>
+                                    </div>
+                                    <label class="form-label mt-3 d-block">Quantity
+                  <input type="number" class="form-control qty-input" value="1" min="1">
+                </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col">
+                            <div class="watch-card">
+                                <img class="watch-img" src="./06.jpg" alt="Precision Style watch">
+                                <div class="watch-body">
+                                    <div class="watch-brand">Bulova</div>
+                                    <h3 class="watch-title">Precision Style</h3>
+                                    <p class="text-secondary">A sophisticated look with a classic dial.</p>
+                                    <div class="watch-price mb-3" data-price="1800000">Rs. 1,800,000</div>
+                                    <div class="card-actions d-flex gap-2">
+                                        <button type="button" class="btn btn-outline-success flex-fill add-to-cart-btn">Add to Cart</button>
+                                        <button type="button" class="btn btn-green flex-fill product-details-btn">Buy Now</button>
+                                    </div>
+                                    <label class="form-label mt-3 d-block">Quantity
+                  <input type="number" class="form-control qty-input" value="1" min="1">
+                </label>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- SMART WATCHES -->
+                    <h2 id="smart-watches" class="mt-5 mb-4">Smart Watches</h2>
+
+                    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+
+                        <div class="col">
+                            <div class="watch-card">
+                                <img class="watch-img" src="./43.jpg" alt="Smart Active watch">
+                                <div class="watch-body">
+                                    <div class="watch-brand">Alberto</div>
+                                    <h3 class="watch-title">Smart Active</h3>
+                                    <p class="text-secondary">A modern design for active everyday routines.</p>
+                                    <div class="watch-price mb-3" data-price="50000">Rs. 50,000</div>
+                                    <div class="card-actions d-flex gap-2">
+                                        <button type="button" class="btn btn-outline-success flex-fill add-to-cart-btn">Add to Cart</button>
+                                        <button type="button" class="btn btn-green flex-fill product-details-btn">Buy Now</button>
+                                    </div>
+                                    <label class="form-label mt-3 d-block">Quantity
+                  <input type="number" class="form-control qty-input" value="1" min="1">
+                </label>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- SPORT WATCHES -->
+                    <h2 id="sport-watches" class="mt-5 mb-4">Sport Watches</h2>
+
+                    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+
+                        <div class="col">
+                            <div class="watch-card">
+                                <img class="watch-img" src="./05.jpg" alt="Citizen Eco-Drive Black Sport Watch">
+                                <div class="watch-body">
+                                    <div class="watch-brand">Citizen Eco-Drive</div>
+                                    <h3 class="watch-title">Black Sport Watch</h3>
+                                    <p class="text-secondary">Sporty styling for everyday wear.</p>
+                                    <div class="watch-price mb-3" data-price="45000">Rs. 45,000</div>
+                                    <div class="card-actions d-flex gap-2">
+                                        <button type="button" class="btn btn-outline-success flex-fill add-to-cart-btn">Add to Cart</button>
+                                        <button type="button" class="btn btn-green flex-fill product-details-btn">Buy Now</button>
+                                    </div>
+                                    <label class="form-label mt-3 d-block">Quantity
+                  <input type="number" class="form-control qty-input" value="1" min="1">
+                </label>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- CLASSIC WATCHES -->
+                    <h2 id="dress-watches" class="mt-5 mb-4">Classic Watches</h2>
+
+                    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+
+                        <div class="col">
+                            <div class="watch-card">
+                                <img class="watch-img" src="./10.jpg" alt="Black Elegance Watch">
+                                <div class="watch-body">
+                                    <div class="watch-brand">Michael Kors</div>
+                                    <h3 class="watch-title">Black Elegance</h3>
+                                    <p class="text-secondary">A modern, polished style for any occasion.</p>
+                                    <div class="watch-price mb-3" data-price="90000">Rs. 90,000</div>
+                                    <div class="card-actions d-flex gap-2">
+                                        <button type="button" class="btn btn-outline-success flex-fill add-to-cart-btn">Add to Cart</button>
+                                        <button type="button" class="btn btn-green flex-fill product-details-btn">Buy Now</button>
+                                    </div>
+                                    <label class="form-label mt-3 d-block">Quantity
+                  <input type="number" class="form-control qty-input" value="1" min="1">
+                </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col">
+                            <div class="watch-card">
+                                <img class="watch-img" src="./06.jpg" alt="Brown-Tone Classic watch">
+                                <div class="watch-body">
+                                    <div class="watch-brand">Michael Kors</div>
+                                    <h3 class="watch-title">Brown-Tone Classic</h3>
+                                    <p class="text-secondary">A polished finish for smart and casual looks.</p>
+                                    <div class="watch-price mb-3" data-price="60000">Rs. 60,000</div>
+                                    <div class="card-actions d-flex gap-2">
+                                        <button type="button" class="btn btn-outline-success flex-fill add-to-cart-btn">Add to Cart</button>
+                                        <button type="button" class="btn btn-green flex-fill product-details-btn">Buy Now</button>
+                                    </div>
+                                    <label class="form-label mt-3 d-block">Quantity
+                  <input type="number" class="form-control qty-input" value="1" min="1">
+                </label>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- ROYAL CLOCKS -->
+                    <h2 id="royal-clocks" class="mt-5 mb-4">Royal Clocks</h2>
+
+                    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+
+                        <div class="col">
+                            <div class="watch-card">
+                                <img class="watch-img" src="./85.jpg" alt="Classic wall clock">
+                                <div class="watch-body">
+                                    <div class="watch-brand">Alberto</div>
+                                    <h3 class="watch-title">Classic Wall Clock</h3>
+                                    <p class="text-secondary">A timeless design that brings elegance to any room.</p>
+                                    <div class="watch-price mb-3" data-price="3500000">Rs. 3,500,000</div>
+                                    <div class="card-actions d-flex gap-2">
+                                        <button type="button" class="btn btn-outline-success flex-fill add-to-cart-btn">Add to Cart</button>
+                                        <button type="button" class="btn btn-green flex-fill product-details-btn">Buy Now</button>
+                                    </div>
+                                    <label class="form-label mt-3 d-block">Quantity
+                  <input type="number" class="form-control qty-input" value="1" min="1">
+                </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col">
+                            <div class="watch-card">
+                                <img class="watch-img" src="./88.jpg" alt="Elegant table clock">
+                                <div class="watch-body">
+                                    <div class="watch-brand">Alberto</div>
+                                    <h3 class="watch-title">Elegant Table Clock</h3>
+                                    <p class="text-secondary">A polished timepiece for stylish desks and interiors.</p>
+                                    <div class="watch-price mb-3" data-price="1200000">Rs. 1,200,000</div>
+                                    <div class="card-actions d-flex gap-2">
+                                        <button type="button" class="btn btn-outline-success flex-fill add-to-cart-btn">Add to Cart</button>
+                                        <button type="button" class="btn btn-green flex-fill product-details-btn">Buy Now</button>
+                                    </div>
+                                    <label class="form-label mt-3 d-block">Quantity
+                  <input type="number" class="form-control qty-input" value="1" min="1">
+                </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col">
+                            <div class="watch-card">
+                                <img class="watch-img" src="./89.jpg" alt="Royal crystal clock">
+                                <div class="watch-body">
+                                    <div class="watch-brand">Alberto</div>
+                                    <h3 class="watch-title">Royal Crystal Clock</h3>
+                                    <p class="text-secondary">A luxurious crystal-inspired design with timeless appeal.</p>
+                                    <div class="watch-price mb-3" data-price="9500000">Rs. 9,500,000</div>
+                                    <div class="card-actions d-flex gap-2">
+                                        <button type="button" class="btn btn-outline-success flex-fill add-to-cart-btn">Add to Cart</button>
+                                        <button type="button" class="btn btn-green flex-fill product-details-btn">Buy Now</button>
+                                    </div>
+                                    <label class="form-label mt-3 d-block">Quantity
+                  <input type="number" class="form-control qty-input" value="1" min="1">
+                </label>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW: TECHNOLOGY -->
+        <section class="view" id="view-technology">
+
+            <div class="page-banner">
+                <div class="container">
+                    <h1>Watch And Clock Technology</h1>
+                    <p>Learn about the mechanisms and features that keep time moving.</p>
+                </div>
+            </div>
+
+            <div class="section-pad">
+                <div class="container">
+                    <div class="row g-4">
+
+                        <div class="col-md-6">
+                            <div class="info-card">
+                                <h2 class="h4 mb-3">Mechanical Movement</h2>
+                                <p class="text-secondary mb-0">
+                                    Mechanical watches use a mainspring and gears to measure time. Many enthusiasts value their intricate engineering and traditional craftsmanship.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="info-card">
+                                <h2 class="h4 mb-3">Quartz Movement</h2>
+                                <p class="text-secondary mb-0">
+                                    Quartz watches use a battery and a vibrating quartz crystal to provide reliable and accurate everyday timekeeping.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="info-card">
+                                <h2 class="h4 mb-3">Solar Power</h2>
+                                <p class="text-secondary mb-0">
+                                    Solar-powered watches convert light into energy and can reduce the need for routine battery replacement.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="info-card">
+                                <h2 class="h4 mb-3">Clock Mechanisms</h2>
+                                <p class="text-secondary mb-0">
+                                    Clocks may use quartz movements powered by batteries or mechanical mechanisms powered by springs and gears. These mechanisms help clocks display accurate time.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="info-card">
+                                <h2 class="h4 mb-3">Smart Watch Features</h2>
+                                <p class="text-secondary mb-0">
+                                    Depending on the model, smart watches may provide notifications, activity tracking, health-related features and smartphone connectivity.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="info-card">
+                                <h2 class="h4 mb-3">Wall Clock Technology</h2>
+                                <p class="text-secondary mb-0">
+                                    Wall clocks are available in modern quartz and traditional mechanical designs. They combine timekeeping with decorative styles suitable for homes, offices and other spaces.
+                                </p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- VIEW: PRICE LIST -->
+        <section class="view" id="view-prices">
+
+            <div class="page-banner">
+                <div class="container">
+                    <h1>Watches And Clocks Price List</h1>
+                </div>
+            </div>
+
+            <div class="section-pad">
+                <div class="container">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle">
+                            <thead>
+                                <tr>
+                                    <th>Product Name</th>
+                                    <th>Brand</th>
+                                    <th>Category</th>
+                                    <th class="text-end">Price (PKR)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Submariner Date</td>
+                                    <td>Rolex</td>
+                                    <td>Luxury</td>
+                                    <td class="text-end">Rs. 2,500,000</td>
+                                </tr>
+                                <tr>
+                                    <td>Day-Date Classic</td>
+                                    <td>Rolex</td>
+                                    <td>Luxury</td>
+                                    <td class="text-end">Rs. 3,000,000</td>
+                                </tr>
+                                <tr>
+                                    <td>Black Elegance</td>
+                                    <td>Michael Kors</td>
+                                    <td>Classic</td>
+                                    <td class="text-end">Rs. 90,000</td>
+                                </tr>
+                                <tr>
+                                    <td>Brown-Tone Classic</td>
+                                    <td>Michael Kors</td>
+                                    <td>Classic</td>
+                                    <td class="text-end">Rs. 60,000</td>
+                                </tr>
+                                <tr>
+                                    <td>Smart Active</td>
+                                    <td>Alberto</td>
+                                    <td>Smart Watches</td>
+                                    <td class="text-end">Rs. 50,000</td>
+                                </tr>
+                                <tr>
+                                    <td>Black Sport Watch</td>
+                                    <td>Citizen Eco-Drive</td>
+                                    <td>Sport</td>
+                                    <td class="text-end">Rs. 45,000</td>
+                                </tr>
+                                <tr>
+                                    <td>Vintage Marine</td>
+                                    <td>Bulova</td>
+                                    <td>Vintage</td>
+                                    <td class="text-end">Rs. 89,000</td>
+                                </tr>
+                                <tr>
+                                    <td>Precision Style</td>
+                                    <td>Bulova</td>
+                                    <td>Luxury</td>
+                                    <td class="text-end">Rs. 1,800,000</td>
+                                </tr>
+                                <tr>
+                                    <td>Heritage Classic</td>
+                                    <td>Alberto</td>
+                                    <td>Vintage</td>
+                                    <td class="text-end">Rs. 88,000</td>
+                                </tr>
+                                <tr>
+                                    <td>Classic Wall Clock</td>
+                                    <td>Alberto</td>
+                                    <td>Royal Clocks</td>
+                                    <td class="text-end">Rs. 3,500,000</td>
+                                </tr>
+                                <tr>
+                                    <td>Elegant Table Clock</td>
+                                    <td>Alberto</td>
+                                    <td>Royal Clocks</td>
+                                    <td class="text-end">Rs. 1,200,000</td>
+                                </tr>
+                                <tr>
+                                    <td>Royal Crystal Clock</td>
+                                    <td>Alberto</td>
+                                    <td>Royal Clocks</td>
+                                    <td class="text-end">Rs. 9,500,000</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW: GALLERY -->
+        <section class="view" id="view-gallery">
+
+            <div class="page-banner">
+                <div class="container">
+                    <h1>Watches And Clocks Gallery</h1>
+                    <p>A visual selection of our watch and clock styles.</p>
+                </div>
+            </div>
+
+            <div class="section-pad">
+                <div class="container">
+                    <div class="row g-3">
+                        <div class="col-6 col-lg-4"><img class="gallery-img" src="./10.jpg" alt="Classic watch"></div>
+                        <div class="col-6 col-lg-4"><img class="gallery-img" src="./01.jpg" alt="Minimal watch"></div>
+                        <div class="col-6 col-lg-4"><img class="gallery-img" src="./02.jpg" alt="Classic watch"></div>
+                        <div class="col-6 col-lg-4"><img class="gallery-img" src="./06.jpg" alt="Sport watch"></div>
+                        <div class="col-6 col-lg-4"><img class="gallery-img" src="./07.jpg" alt="Vintage watch"></div>
+                        <div class="col-6 col-lg-4"><img class="gallery-img" src="./05.jpg" alt="Modern timepiece"></div>
+                        <div class="col-6 col-lg-4"><img class="gallery-img" src="./89.jpg" alt="Royal crystal clock"></div>
+                        <div class="col-6 col-lg-4"><img class="gallery-img" src="./88.jpg" alt="Elegant table clock"></div>
+                        <div class="col-6 col-lg-4"><img class="gallery-img" src="./85.jpg" alt="Classic wall clock"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW: STORE LOCATOR -->
+        <section class="view" id="view-store">
+
+            <div class="page-banner">
+                <div class="container">
+                    <h1>Store Locator</h1>
+                    <p>Find the nearest store to you.</p>
+                </div>
+            </div>
+
+            <div class="section-pad">
+                <div class="container">
+                    <div class="row g-4">
+
+                        <div class="col-md-6">
+                            <div class="info-card">
+                                <div class="icon-box mb-3">⌖</div>
+                                <h2 class="h4">Karachi Store</h2>
+                                <p class="text-secondary mb-1"><strong>Address:</strong> Clifton, Karachi, Pakistan</p>
+                                <p class="text-secondary mb-1"><strong>Hours:</strong> Monday-Saturday, 10:00 AM-9:00 PM</p>
+                                <p class="text-secondary mb-0"><strong>Phone:</strong> +92 300 1234567</p>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="info-card">
+                                <div class="icon-box mb-3">⌖</div>
+                                <h2 class="h4">Lahore Store</h2>
+                                <p class="text-secondary mb-1"><strong>Address:</strong> Gulberg, Lahore, Pakistan</p>
+                                <p class="text-secondary mb-1"><strong>Hours:</strong> Monday-Saturday, 10:00 AM-9:00 PM</p>
+                                <p class="text-secondary mb-0"><strong>Phone:</strong> +92 300 7654321</p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW: SUPPORT -->
+        <section class="view" id="view-support">
+
+            <div class="page-banner">
+                <div class="container">
+                    <h1>Customer Support</h1>
+                    <p>Helpful information for taking care of your watch and clock.</p>
+                </div>
+            </div>
+
+            <div class="section-pad">
+                <div class="container">
+
+                    <div class="info-card mb-3">
+                        <h2 class="h5">How should I care for my watch?</h2>
+                        <p class="text-secondary mb-0">
+                            Keep your watch clean, avoid impacts and follow the manufacturer's instructions for cleaning, water resistance and servicing.
+                        </p>
+                    </div>
+
+                    <div class="info-card mb-3">
+                        <h2 class="h5">Can every watch be used in water?</h2>
+                        <p class="text-secondary mb-0">
+                            No. Water resistance differs by model. Always check the manufacturer's specifications before exposing a watch to water.
+                        </p>
+                    </div>
+
+                    <div class="info-card mb-3">
+                        <h2 class="h5">When should a watch be serviced?</h2>
+                        <p class="text-secondary mb-0">
+                            Service intervals depend on the movement and manufacturer. Consult the official manual or a qualified watch technician.
+                        </p>
+                    </div>
+
+                    <div class="info-card">
+                        <h2 class="h5">How should I care for my clock?</h2>
+                        <p class="text-secondary mb-0">
+                            Keep your clock in a clean, dry place away from direct sunlight, dust and extreme temperatures. Replace batteries when needed, handle delicate parts carefully, and arrange professional servicing if the clock stops or keeps incorrect time.
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW: ABOUT US -->
+        <section class="view" id="view-about">
+
+            <div class="page-banner">
+                <div class="container">
+                    <h1>About Alberto Watch Company</h1>
+                    <p>Discover a world of timeless watches, elegant designs, and modern style.</p>
+                </div>
+            </div>
+
+            <div class="section-pad">
+                <div class="container">
+                    <div class="row align-items-center g-5">
+
+                        <div class="col-md-6">
+                            <img class="img-fluid rounded-4 shadow-sm" src="./00000.jpg" alt="Watch close-up">
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="eyebrow">Our Story</div>
+                            <h2 class="mt-2">Craftsmanship Meets Personal Style</h2>
+                            <p class="text-secondary">
+                                Alberto Watch Company offers a curated selection of timepieces, along with watch repair, appraisal, and retail services. We aim to bring together timeless craftsmanship, elegant designs, helpful product information, and exceptional customer support to
+                                help every customer find a watch that suits their personal style.
+                            </p>
+                            <p class="text-secondary">
+                                Explore watches that complement your personality and make every moment special.
+                            </p>
+
+                            <div class="mt-4 mb-4">
+                                <p class="mb-2"><strong>Email:</strong> alberto.watchcompany@email.com</p>
+                                <p class="mb-2"><strong>Address:</strong> Clifton, Karachi, Pakistan</p>
+                                <p class="mb-0"><strong>Phone:</strong> +92 300 1234567</p>
+                            </div>
+
+                            <a href="#/contact" class="btn btn-green">Contact Us</a>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- VIEW: CONTACT -->
+        <section class="view" id="view-contact">
+
+            <div class="page-banner">
+                <div class="container">
+                    <h1>Contact Us</h1>
+                </div>
+            </div>
+
+            <div class="section-pad">
+                <div class="container">
+                    <div class="row g-4">
+
+                        <div class="col-lg-5">
+                            <div class="info-card">
+                                <h2 class="h4 mb-4">Contact Information</h2>
+
+                                <div class="d-flex gap-3 mb-4">
+                                    <div class="icon-box">✉</div>
+                                    <div>
+                                        <strong>Email</strong>
+                                        <p class="mb-0">alberto.watchcompany@email.com</p>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex gap-3 mb-4">
+                                    <div class="icon-box">⌖</div>
+                                    <div>
+                                        <strong>Address</strong>
+                                        <p class="mb-0">Clifton, Karachi, Pakistan</p>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex gap-3">
+                                    <div class="icon-box">☎</div>
+                                    <div>
+                                        <strong>Phone</strong>
+                                        <p class="mb-0">+92 300 1234567</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-7">
+                            <div class="info-card">
+                                <h2 class="h4 mb-4">Send a Message</h2>
+
+                                <form id="contactForm" action="mailto:alberto.watchcompany@email.com" method="post" enctype="text/plain">
+                                    <div class="mb-3">
+                                        <label for="contactName" class="form-label">Full Name</label>
+                                        <input id="contactName" name="Name" class="form-control" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="contactEmail" class="form-label">Email Address</label>
+                                        <input id="contactEmail" name="Email" type="email" class="form-control" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="contactSubject" class="form-label">Subject</label>
+                                        <input id="contactSubject" name="Subject" class="form-control" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="contactMessage" class="form-label">Message</label>
+                                        <textarea id="contactMessage" name="Message" class="form-control" rows="4" required></textarea>
+                                    </div>
+                                    <button class="btn btn-green" type="submit">Send Message</button>
+                                </form>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- Success Modal -->
+            <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-body text-center p-4">
+                            <div class="success-icon mb-3">✓</div>
+                            <h2 class="h5 mb-2" id="successModalLabel">Message Sent Successfully</h2>
+                            <p class="mb-4">Thank you for reaching out. We'll get back to you shortly.</p>
+                            <button type="button" class="btn btn-green" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- VIEW: SITE MAP -->
+        <section class="view" id="view-sitemap">
+
+            <div class="page-banner">
+                <div class="container">
+                    <h1>Site Map</h1>
+                    <p>Use these links to explore the website sections.</p>
+                </div>
+            </div>
+
+            <div class="section-pad">
+                <div class="container">
+                    <div class="row g-3">
+                        <div class="col-sm-6 col-lg-4">
+                            <div class="info-card"><a href="#/home" class="text-decoration-none fw-bold text-success">Home →</a></div>
+                        </div>
+                        <div class="col-sm-6 col-lg-4">
+                            <div class="info-card"><a href="#/products" class="text-decoration-none fw-bold text-success">Products →</a></div>
+                        </div>
+                        <div class="col-sm-6 col-lg-4">
+                            <div class="info-card"><a href="#/technology" class="text-decoration-none fw-bold text-success">Technology →</a></div>
+                        </div>
+                        <div class="col-sm-6 col-lg-4">
+                            <div class="info-card"><a href="#/prices" class="text-decoration-none fw-bold text-success">Price List →</a></div>
+                        </div>
+                        <div class="col-sm-6 col-lg-4">
+                            <div class="info-card"><a href="#/gallery" class="text-decoration-none fw-bold text-success">Gallery →</a></div>
+                        </div>
+                        <div class="col-sm-6 col-lg-4">
+                            <div class="info-card"><a href="#/store" class="text-decoration-none fw-bold text-success">Store Locator →</a></div>
+                        </div>
+                        <div class="col-sm-6 col-lg-4">
+                            <div class="info-card"><a href="#/support" class="text-decoration-none fw-bold text-success">Support →</a></div>
+                        </div>
+                        <div class="col-sm-6 col-lg-4">
+                            <div class="info-card"><a href="#/about" class="text-decoration-none fw-bold text-success">About Us →</a></div>
+                        </div>
+                        <div class="col-sm-6 col-lg-4">
+                            <div class="info-card"><a href="#/contact" class="text-decoration-none fw-bold text-success">Contact →</a></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="container">
+            <div class="row g-4">
+
+                <div class="col-md-6">
+                    <h2 class="h4">ALBERTO WATCH COMPANY</h2>
+                    <p class="mb-0">
+                        Elegance in Every Second.<br> Discover watches that combine timeless design, precision, and exceptional style.
+                    </p>
+                </div>
+
+                <div class="col-md-3">
+                    <h3 class="h6">Explore</h3>
+                    <p class="mb-2"><a href="#/products">Products</a></p>
+                    <p class="mb-2"><a href="#/technology">Technology</a></p>
+                    <p class="mb-2"><a href="#/prices">Price List</a></p>
+                    <p class="mb-2"><a href="#/gallery">Gallery</a></p>
+                </div>
+
+                <div class="col-md-3">
+                    <h3 class="h6">Information</h3>
+                    <p class="mb-2"><a href="#/store">Store Locator</a></p>
+                    <p class="mb-2"><a href="#/support">Support</a></p>
+                    <p class="mb-2"><a href="#/about">About Us</a></p>
+                    <p class="mb-2"><a href="#/contact">Contact Us</a></p>
+                </div>
+
+            </div>
+
+            <hr class="footer-line mt-4">
+
+            <p class="small mb-0">© Alberto Watch Company</p>
+        </div>
+    </footer>
+
+    <!-- BOTTOM TICKER (CSS animation) -->
+    <div class="ticker">
+        <div class="ticker-track">
+            Date: <span id="date">Loading...</span> &nbsp;&nbsp; | &nbsp;&nbsp; Time: <span id="time">Loading...</span> &nbsp;&nbsp; | &nbsp;&nbsp; Visitor Location: <span id="city">Getting location...</span> &nbsp;&nbsp; | &nbsp;&nbsp; Welcome to Alberto
+            Watch Company — Your Time, Our Passion.
+        </div>
+    </div>
+
+    <!-- BUY NOW POPUP (product details) -->
+    <div class="modal fade" id="watchModal" tabindex="-1" aria-labelledby="watchModalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="watchModalTitle">Product Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <img id="popupProductImg" class="img-fluid rounded mb-3" alt="">
+                    <p id="popupProductDesc" class="text-secondary"></p>
+                    <p id="popupProductName">Product name</p>
+                    <p id="popupProductPrice">Price: Rs. 0</p>
+                    <p id="popupProductQuantity">Quantity: 1</p>
+                    <p id="popupProductTotal">Total: Rs. 0</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-success" id="confirmBuyBtn">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PURCHASE SUCCESS POPUP -->
+    <div class="modal fade" id="purchaseModal" tabindex="-1" aria-labelledby="purchaseModalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body text-center p-4">
+                    <div class="success-icon mb-3">✓</div>
+                    <h2 class="h5 mb-2" id="purchaseModalTitle">Successfully Purchased!</h2>
+                    <p class="mb-4" id="purchaseText">Thank you for shopping with Alberto Watch Company.</p>
+                    <button type="button" class="btn btn-green" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SIGN UP POPUP -->
+    <div class="modal fade" id="signupModal" tabindex="-1" aria-labelledby="signupModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form id="signupForm">
+                    <div class="modal-header">
+                        <h2 class="modal-title h5" id="signupModalLabel">Sign Up to Continue</h2>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p class="text-secondary small">Please sign up before adding items to your cart or buying.</p>
+                        <div class="mb-3">
+                            <label for="signupName" class="form-label">Full Name</label>
+                            <input id="signupName" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="signupEmail" class="form-label">Email Address</label>
+                            <input id="signupEmail" type="email" class="form-control" required>
+                        </div>
+                        <div class="mb-1">
+                            <label for="signupPhone" class="form-label">Phone Number</label>
+                            <input id="signupPhone" type="tel" class="form-control" required pattern="[0-9+\- ]{7,}" placeholder="+92 300 1234567">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-green w-100">Create Account</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- LOGIN POPUP -->
+    <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form id="loginForm">
+                    <div class="modal-header">
+                        <h2 class="modal-title h5" id="loginModalLabel">Login</h2>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="loginError" class="alert alert-danger small d-none"></div>
+                        <div class="mb-3">
+                            <label for="loginEmail" class="form-label">Email Address</label>
+                            <input id="loginEmail" type="email" class="form-control" required>
+                        </div>
+                        <div class="mb-1">
+                            <label for="loginPhone" class="form-label">Phone Number</label>
+                            <input id="loginPhone" type="tel" class="form-control" required placeholder="+92 300 1234567">
+                        </div>
+                    </div>
+                    <div class="modal-footer flex-column">
+                        <button type="submit" class="btn btn-green w-100">Login</button>
+                        <p class="small text-secondary mt-3 mb-0">
+                            No account yet? <a href="#" id="goToSignup">Sign up</a>
+                        </p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- BOOTSTRAP JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+
+
+    <!-- VISITOR COUNT -->
+    <script>
+        try {
+            const key = "albertoWatchVisitors";
+            const count = Number(localStorage.getItem(key) || 0) + 1;
+            localStorage.setItem(key, count);
+            document.getElementById("visitorCount").textContent = "Visitors: " + count;
+        } catch (error) {
+            document.getElementById("visitorCount").textContent = "Welcome!";
+        }
+    </script>
+
+    <!-- DATE, TIME AND LOCATION -->
+    <script>
+        function updateTicker() {
+            const now = new Date();
+
+            document.getElementById("date").textContent = now.toLocaleDateString("en-PK", {
+                weekday: "long",
+                day: "numeric",
+                month: "long",
+                year: "numeric",
+                timeZone: "Asia/Karachi"
+            });
+
+            document.getElementById("time").textContent = now.toLocaleTimeString("en-PK", {
+                hour: "2-digit",
+                minute: "2-digit",
+                second: "2-digit",
+                hour12: true,
+                timeZone: "Asia/Karachi"
+            });
+        }
+
+        function getVisitorLocation() {
+            const city = document.getElementById("city");
+
+            if (!navigator.geolocation) {
+                city.textContent = "Geolocation is not supported";
+                return;
+            }
+
+            navigator.geolocation.getCurrentPosition(
+                async function(position) {
+                    const lat = position.coords.latitude;
+                    const lon = position.coords.longitude;
+
+                    try {
+                        const controller = new AbortController();
+                        const timer = setTimeout(() => controller.abort(), 8000);
+
+                        const response = await fetch(
+                            `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=en`, {
+                                signal: controller.signal
+                            }
+                        );
+                        clearTimeout(timer);
+
+                        const data = await response.json();
+                        const place = data.city || data.locality || data.principalSubdivision || "Unknown location";
+                        const country = data.countryName || "";
+
+                        city.textContent = country ? place + ", " + country : place;
+                    } catch (error) {
+                        console.error("Reverse geocoding error:", error);
+                        city.textContent = "Location name unavailable";
+                    }
+                },
+                function(err) {
+                    console.error("Geolocation error:", err);
+                    city.textContent = "Location unavailable or permission denied";
+                }
+            );
+        }
+
+        updateTicker();
+        getVisitorLocation();
+        setInterval(updateTicker, 1000);
+    </script>
+
+    <!-- PAGE SCRIPTS: SPA router, menu fade, popups, category filter, contact form -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+
+            // ================= SPA ROUTER =================
+            // Routes: #/home, #/products, #/products/<category-id>, #/technology, #/prices,
+            // #/gallery, #/store, #/support, #/about, #/contact, #/sitemap
+            const VIEWS = ["home", "products", "technology", "prices", "gallery", "store", "support", "about", "contact", "sitemap"];
+            const FADE_OUT_MS = 250;
+            const navLinks = document.querySelectorAll(".navbar-nav .nav-link");
+            const categoryButtons = document.querySelectorAll(".category-btn");
+            const groupHeadings = document.querySelectorAll("#view-products h2[id]");
+            const navCollapse = document.getElementById("mainNav");
+            let currentView = null;
+            let leaveTimer = null;
+
+            function parseHash() {
+                const parts = location.hash.replace(/^#\/?/, "").split("/");
+                let route = parts[0] || "home";
+                if (VIEWS.indexOf(route) === -1) route = "home";
+                return {
+                    route: route,
+                    sub: parts[1] || ""
+                };
+            }
+
+            function applyCategory(sub) {
+                const isValid = Array.prototype.some.call(groupHeadings, function(h) {
+                    return h.id === sub;
+                });
+                const filter = isValid ? sub : "all-watches";
+
+                groupHeadings.forEach(function(heading) {
+                    const grid = heading.nextElementSibling;
+                    const show = filter === "all-watches" || heading.id === filter;
+                    heading.style.display = show ? "" : "none";
+                    if (grid) grid.style.display = show ? "" : "none";
+                });
+
+                categoryButtons.forEach(function(btn) {
+                    btn.classList.toggle("active", btn.getAttribute("href") === "#/products/" + filter);
+                });
+            }
+
+            function setActiveNavLink(route) {
+                navLinks.forEach(function(link) {
+                    link.classList.toggle("active", link.getAttribute("href") === "#/" + route);
+                });
+            }
+
+            function navigate() {
+                const state = parseHash();
+                const route = state.route;
+
+                setActiveNavLink(route);
+                if (route === "products") applyCategory(state.sub || "all-watches");
+
+                // Same view: no fade needed. Products filter changes scroll to the list.
+                if (route === currentView) {
+                    if (route === "products") {
+                        document.getElementById("view-products").scrollIntoView({
+                            behavior: "smooth"
+                        });
+                    }
+                    return;
+                }
+
+                const previous = currentView ? document.getElementById("view-" + currentView) : null;
+                const next = document.getElementById("view-" + route);
+
+                function showNext() {
+                    if (previous) previous.classList.remove("is-active", "is-leaving");
+                    next.classList.add("is-active");
+                    currentView = route;
+                    window.scrollTo(0, 0);
+                }
+
+                clearTimeout(leaveTimer);
+                if (previous) {
+                    previous.classList.add("is-leaving");
+                    leaveTimer = setTimeout(showNext, FADE_OUT_MS);
+                } else {
+                    showNext();
+                }
+            }
+
+            window.addEventListener("hashchange", navigate);
+            navigate();
+
+            // Close the mobile menu after picking a link
+            navLinks.forEach(function(link) {
+                link.addEventListener("click", function() {
+                    if (navCollapse.classList.contains("show")) {
+                        bootstrap.Collapse.getOrCreateInstance(navCollapse).hide();
+                    }
+                });
+            });
+
+            // MENU FADE-OUT: fade the links out when the mobile menu closes
+            const navList = navCollapse.querySelector(".navbar-nav");
+
+            navCollapse.addEventListener("hide.bs.collapse", function() {
+                navList.classList.add("is-fading-out");
+            });
+
+            navCollapse.addEventListener("hidden.bs.collapse", function() {
+                navList.classList.remove("is-fading-out");
+            });
+
+            // BUY NOW POPUP + PURCHASE SUCCESS POPUP
+            const modalElement = document.getElementById("watchModal");
+            const purchaseModalElement = document.getElementById("purchaseModal");
+
+            if (modalElement && purchaseModalElement && typeof bootstrap !== "undefined") {
+                const productModal = new bootstrap.Modal(modalElement);
+                const purchaseModal = new bootstrap.Modal(purchaseModalElement);
+                let pendingPurchase = false;
+
+                modalElement.addEventListener("hidden.bs.modal", function() {
+                    if (pendingPurchase) {
+                        pendingPurchase = false;
+                        purchaseModal.show();
+                    }
+                });
+
+                document.getElementById("confirmBuyBtn").addEventListener("click", function() {
+                    const name = document.getElementById("popupProductName").textContent.replace("Product: ", "");
+                    const qty = document.getElementById("popupProductQuantity").textContent.replace("Quantity: ", "");
+                    const total = document.getElementById("popupProductTotal").textContent.replace("Total: ", "");
+
+                    document.getElementById("purchaseText").textContent =
+                        qty + " × " + name + " purchased successfully. Total: " + total +
+                        ". Thank you for shopping with Alberto Watch Company!";
+
+                    pendingPurchase = true;
+                    productModal.hide();
+                });
+
+                document.querySelectorAll(".product-details-btn").forEach(function(button) {
+                    button.addEventListener("click", function() {
+                        const card = button.closest(".watch-card");
+                        if (!card) return;
+
+                        const name = card.querySelector(".watch-title").textContent.trim();
+                        const price = Number(card.querySelector(".watch-price").dataset.price) || 0;
+                        const quantityInput = card.querySelector(".qty-input");
+                        const quantity = Math.max(1, parseInt(quantityInput.value, 10) || 1);
+                        const total = price * quantity;
+                        const imgSrc = card.querySelector(".watch-img").getAttribute("src");
+                        const descText = card.querySelector(".text-secondary").textContent.trim();
+
+                        function formatPrice(amount) {
+                            return "Rs. " + amount.toLocaleString("en-PK");
+                        }
+
+                        document.getElementById("popupProductImg").src = imgSrc;
+                        document.getElementById("popupProductDesc").textContent = descText;
+                        document.getElementById("popupProductName").textContent = "Product: " + name;
+                        document.getElementById("popupProductPrice").textContent = "Price: " + formatPrice(price);
+                        document.getElementById("popupProductQuantity").textContent = "Quantity: " + quantity;
+                        document.getElementById("popupProductTotal").textContent = "Total: " + formatPrice(total);
+
+                        productModal.show();
+                    });
+                });
+            }
+
+            // CONTACT FORM SUCCESS POPUP
+            const contactForm = document.getElementById("contactForm");
+            if (contactForm) {
+                contactForm.addEventListener("submit", function() {
+                    const form = this;
+                    setTimeout(function() {
+                        const modal = new bootstrap.Modal(document.getElementById("successModal"));
+                        modal.show();
+                        form.reset();
+                    }, 500);
+                });
+            }
+
+        });
+    </script>
+
+    <!-- CART LOGIC -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var cart = [];
+
+            var cartItemsEl = document.getElementById('cartItems');
+            var cartTotalEl = document.getElementById('cartTotal');
+            var cartCountEl = document.getElementById('cartCount');
+            var cartPanelEl = document.getElementById('cartPanel');
+            var toastEl = document.getElementById('cartToast');
+            var toastBodyEl = document.getElementById('cartToastBody');
+            var viewCartBtn = document.getElementById('viewCartBtn');
+            var checkoutBtn = document.getElementById('checkoutBtn');
+            var clearCartBtn = document.getElementById('clearCart');
+            var purchaseTextEl = document.getElementById('purchaseText');
+            var purchaseModalEl = document.getElementById('purchaseModal');
+
+            var toast = (toastEl && window.bootstrap) ? new bootstrap.Toast(toastEl, {
+                delay: 4000
+            }) : null;
+
+            function formatPrice(n) {
+                return 'Rs. ' + n.toLocaleString('en-PK');
+            }
+
+            function showToast(message, showViewCart) {
+                if (!toast) return;
+                toastBodyEl.textContent = message;
+                viewCartBtn.classList.toggle('d-none', !showViewCart);
+                toast.show();
+            }
+
+            function renderCart() {
+                var count = 0;
+                var total = 0;
+                cartItemsEl.innerHTML = '';
+
+                if (cart.length === 0) {
+                    cartItemsEl.innerHTML = '<p class="text-secondary">Your cart is empty.</p>';
+                }
+
+                cart.forEach(function(item, index) {
+                    count += item.qty;
+                    total += item.qty * item.price;
+
+                    var row = document.createElement('div');
+                    row.className = 'd-flex justify-content-between align-items-start border-bottom py-3';
+                    row.innerHTML =
+                        '<div>' +
+                        '<strong></strong>' +
+                        '<div class="small text-secondary"></div>' +
+                        '</div>' +
+                        '<div class="text-end">' +
+                        '<div class="fw-semibold"></div>' +
+                        '<button type="button" class="btn btn-link btn-sm text-danger p-0 remove-btn cart-item-remove">Remove</button>' +
+                        '</div>';
+
+                    row.querySelector('strong').textContent = item.title;
+                    row.querySelector('.small').textContent = item.qty + ' × ' + formatPrice(item.price);
+                    row.querySelector('.fw-semibold').textContent = formatPrice(item.qty * item.price);
+                    row.querySelector('.remove-btn').addEventListener('click', function() {
+                        cart.splice(index, 1);
+                        renderCart();
+                    });
+
+                    cartItemsEl.appendChild(row);
+                });
+
+                cartTotalEl.textContent = formatPrice(total);
+                cartCountEl.textContent = count;
+            }
+
+            function addToCart(title, price, qty) {
+                var existing = cart.find(function(item) {
+                    return item.title === title && item.price === price;
+                });
+
+                if (existing) {
+                    existing.qty += qty;
+                } else {
+                    cart.push({
+                        title: title,
+                        price: price,
+                        qty: qty
+                    });
+                }
+
+                renderCart();
+                showToast(qty + ' × ' + title + ' added to cart', true);
+            }
+
+            document.querySelectorAll('.watch-body').forEach(function(body) {
+                var addBtn = body.querySelector('.add-to-cart-btn');
+                if (!addBtn) return;
+
+                addBtn.addEventListener('click', function() {
+                    var title = body.querySelector('.watch-title').textContent.trim();
+                    var price = parseInt(body.querySelector('.watch-price').dataset.price, 10);
+                    var qtyInput = body.querySelector('.qty-input');
+                    var qty = Math.max(1, parseInt(qtyInput.value, 10) || 1);
+
+                    addToCart(title, price, qty);
+                    qtyInput.value = 1;
+                });
+            });
+
+            if (viewCartBtn && cartPanelEl && window.bootstrap) {
+                viewCartBtn.addEventListener('click', function() {
+                    if (toast) toast.hide();
+                    bootstrap.Offcanvas.getOrCreateInstance(cartPanelEl).show();
+                });
+            }
+
+            clearCartBtn.addEventListener('click', function() {
+                cart = [];
+                renderCart();
+            });
+
+            checkoutBtn.addEventListener('click', function() {
+                if (cart.length === 0) {
+                    showToast('Your cart is empty.', false);
+                    return;
+                }
+
+                var lines = cart.map(function(item) {
+                    return item.qty + ' × ' + item.title;
+                });
+                var grandTotal = cart.reduce(function(sum, item) {
+                    return sum + item.qty * item.price;
+                }, 0);
+
+                purchaseTextEl.textContent =
+                    'Purchased: ' + lines.join(', ') + '. Total: ' + formatPrice(grandTotal) +
+                    '. Thank you for shopping with Alberto Watch Company!';
+
+                cart = [];
+                renderCart();
+
+                cartPanelEl.addEventListener('hidden.bs.offcanvas', function() {
+                    bootstrap.Modal.getOrCreateInstance(purchaseModalEl).show();
+                }, {
+                    once: true
+                });
+
+                bootstrap.Offcanvas.getOrCreateInstance(cartPanelEl).hide();
+            });
+
+            renderCart();
+        });
+    </script>
+
+    <!-- SIGN UP, LOGIN + CART GATE (login required for cart / buy / checkout) -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var SESSION_KEY = 'albertoSession';
+            var ACCOUNTS_KEY = 'albertoAccounts';
+
+            var authBtn = document.getElementById('authBtn');
+            var loginBtn = document.getElementById('loginBtn');
+            var signupModalEl = document.getElementById('signupModal');
+            var loginModalEl = document.getElementById('loginModal');
+            var signupModal = new bootstrap.Modal(signupModalEl);
+            var loginModal = new bootstrap.Modal(loginModalEl);
+            var signupForm = document.getElementById('signupForm');
+            var loginForm = document.getElementById('loginForm');
+            var loginError = document.getElementById('loginError');
+            var goToSignup = document.getElementById('goToSignup');
+            var toastBodyEl = document.getElementById('cartToastBody');
+            var toastEl = document.getElementById('cartToast');
+            var viewCartBtn = document.getElementById('viewCartBtn');
+
+            function getSession() {
+                try {
+                    return JSON.parse(localStorage.getItem(SESSION_KEY)) || null;
+                } catch (e) {
+                    return null;
+                }
+            }
+
+            function getAccounts() {
+                try {
+                    return JSON.parse(localStorage.getItem(ACCOUNTS_KEY)) || [];
+                } catch (e) {
+                    return [];
+                }
+            }
+
+            function saveAccounts(list) {
+                try {
+                    localStorage.setItem(ACCOUNTS_KEY, JSON.stringify(list));
+                } catch (e) {}
+            }
+
+            function saveSession(user) {
+                try {
+                    localStorage.setItem(SESSION_KEY, JSON.stringify(user));
+                } catch (e) {}
+            }
+
+            function isLoggedIn() {
+                return getSession() !== null;
+            }
+
+            function normalizeEmail(value) {
+                return value.trim().toLowerCase();
+            }
+
+            function normalizePhone(value) {
+                return value.replace(/\D/g, '');
+            }
+
+            function showMessage(message) {
+                toastBodyEl.textContent = message;
+                viewCartBtn.classList.add('d-none');
+                bootstrap.Toast.getOrCreateInstance(toastEl, {
+                    delay: 4000
+                }).show();
+            }
+
+            function renderAuth() {
+                var loggedIn = isLoggedIn();
+                authBtn.textContent = loggedIn ? 'Logout' : 'Sign Up';
+                loginBtn.classList.toggle('d-none', loggedIn);
+            }
+
+            // Login button
+            loginBtn.addEventListener('click', function() {
+                loginError.classList.add('d-none');
+                loginForm.reset();
+                loginModal.show();
+            });
+
+            // Sign Up / Logout button
+            authBtn.addEventListener('click', function() {
+                if (isLoggedIn()) {
+                    try {
+                        localStorage.removeItem(SESSION_KEY);
+                    } catch (e) {}
+                    document.getElementById('clearCart').click();
+                    renderAuth();
+                    showMessage('You have been logged out.');
+                } else {
+                    signupModal.show();
+                }
+            });
+
+            // Create account, save it, and log in
+            signupForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                var user = {
+                    name: document.getElementById('signupName').value.trim(),
+                    email: document.getElementById('signupEmail').value.trim(),
+                    phone: document.getElementById('signupPhone').value.trim(),
+                    createdAt: new Date().toISOString()
+                };
+
+                var accounts = getAccounts();
+                var exists = accounts.some(function(acc) {
+                    return normalizeEmail(acc.email) === normalizeEmail(user.email);
+                });
+
+                if (!exists) {
+                    accounts.push(user);
+                    saveAccounts(accounts);
+                }
+
+                saveSession(user);
+                signupForm.reset();
+                signupModal.hide();
+                renderAuth();
+                showMessage('Welcome, ' + user.name + '! You can now shop with us.');
+            });
+
+            // Log in with an existing account (email + phone must match)
+            loginForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                var email = normalizeEmail(document.getElementById('loginEmail').value);
+                var phone = normalizePhone(document.getElementById('loginPhone').value);
+
+                var match = getAccounts().find(function(acc) {
+                    return normalizeEmail(acc.email) === email && normalizePhone(acc.phone) === phone;
+                });
+
+                if (!match) {
+                    loginError.textContent = 'No account matches this email and phone. Please sign up first.';
+                    loginError.classList.remove('d-none');
+                    return;
+                }
+
+                saveSession(match);
+                loginForm.reset();
+                loginModal.hide();
+                renderAuth();
+                showMessage('Welcome back, ' + match.name + '!');
+            });
+
+            // "Sign up" link inside the login popup
+            goToSignup.addEventListener('click', function(e) {
+                e.preventDefault();
+                loginModal.hide();
+                loginModalEl.addEventListener('hidden.bs.modal', function() {
+                    signupModal.show();
+                }, {
+                    once: true
+                });
+            });
+
+            // GATE: Add to Cart, Buy Now and Checkout need a logged-in user
+            document.addEventListener('click', function(e) {
+                var blocked = e.target.closest('.add-to-cart-btn, .product-details-btn, #checkoutBtn');
+                if (!blocked || isLoggedIn()) return;
+
+                e.preventDefault();
+                e.stopImmediatePropagation();
+                signupModal.show();
+            }, true);
+
+            renderAuth();
+        });
+    </script>
+
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up and Login Code</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container py-4">
+        <h1 class="h3 mb-4">Sign Up and Login</h1>
+
+        <!-- NAVBAR AUTH BUTTONS -->
+        <div class="nav-actions mb-4">
+            <button type="button" id="loginBtn" class="btn btn-outline-light auth-btn">Login</button>
+            <button type="button" id="authBtn" class="btn btn-outline-light auth-btn">Sign Up</button>
+        </div>
+
+        <!-- SUPPORTING CART ELEMENTS USED BY THE ORIGINAL AUTH SCRIPT -->
+        <div class="offcanvas offcanvas-end" tabindex="-1" id="cartPanel" aria-labelledby="cartPanelLabel">
+            <div class="offcanvas-header">
+                <h2 class="h5 mb-0" id="cartPanelLabel">Your Cart</h2>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body d-flex flex-column">
+                <div id="cartItems" class="flex-grow-1"></div>
+                <div class="border-top pt-3 mt-3">
+                    <div class="d-flex justify-content-between fw-bold mb-3">
+                        <span>Total</span>
+                        <span id="cartTotal">Rs. 0</span>
+                    </div>
+                    <button type="button" id="checkoutBtn" class="btn btn-green w-100 mb-2">Checkout</button>
+                    <button type="button" id="clearCart" class="btn btn-outline-danger w-100">Clear Cart</button>
+                </div>
+            </div>
+        </div>
+        <div class="toast-container position-fixed end-0 p-3" style="top:150px;">
+            <div id="cartToast" class="toast align-items-center text-bg-success border-0" role="status" aria-live="polite" aria-atomic="true">
+                <div class="d-flex align-items-center">
+                    <div class="toast-body" id="cartToastBody">Added to cart</div>
+                    <button type="button" class="btn btn-sm btn-light me-2" id="viewCartBtn">View Cart</button>
+                    <button type="button" class="btn-close btn-close-white me-2" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SIGN UP POPUP -->
+    <div class="modal fade" id="signupModal" tabindex="-1" aria-labelledby="signupModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form id="signupForm">
+                    <div class="modal-header">
+                        <h2 class="modal-title h5" id="signupModalLabel">Sign Up to Continue</h2>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p class="text-secondary small">Please sign up before adding items to your cart or buying.</p>
+                        <div class="mb-3">
+                            <label for="signupName" class="form-label">Full Name</label>
+                            <input id="signupName" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="signupEmail" class="form-label">Email Address</label>
+                            <input id="signupEmail" type="email" class="form-control" required>
+                        </div>
+                        <div class="mb-1">
+                            <label for="signupPhone" class="form-label">Phone Number</label>
+                            <input id="signupPhone" type="tel" class="form-control" required pattern="[0-9+\- ]{7,}" placeholder="+92 300 1234567">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-green w-100">Create Account</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- LOGIN POPUP -->
+    <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form id="loginForm">
+                    <div class="modal-header">
+                        <h2 class="modal-title h5" id="loginModalLabel">Login</h2>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="loginError" class="alert alert-danger small d-none"></div>
+                        <div class="mb-3">
+                            <label for="loginEmail" class="form-label">Email Address</label>
+                            <input id="loginEmail" type="email" class="form-control" required>
+                        </div>
+                        <div class="mb-1">
+                            <label for="loginPhone" class="form-label">Phone Number</label>
+                            <input id="loginPhone" type="tel" class="form-control" required placeholder="+92 300 1234567">
+                        </div>
+                    </div>
+                    <div class="modal-footer flex-column">
+                        <button type="submit" class="btn btn-green w-100">Login</button>
+                        <p class="small text-secondary mt-3 mb-0">
+                            No account yet? <a href="#" id="goToSignup">Sign up</a>
+                        </p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- BOOTSTRAP JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- SIGN UP, LOGIN + CART GATE (login required for cart / buy / checkout) -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var SESSION_KEY = 'albertoSession';
+            var ACCOUNTS_KEY = 'albertoAccounts';
+
+            var authBtn = document.getElementById('authBtn');
+            var loginBtn = document.getElementById('loginBtn');
+            var signupModalEl = document.getElementById('signupModal');
+            var loginModalEl = document.getElementById('loginModal');
+            var signupModal = new bootstrap.Modal(signupModalEl);
+            var loginModal = new bootstrap.Modal(loginModalEl);
+            var signupForm = document.getElementById('signupForm');
+            var loginForm = document.getElementById('loginForm');
+            var loginError = document.getElementById('loginError');
+            var goToSignup = document.getElementById('goToSignup');
+            var toastBodyEl = document.getElementById('cartToastBody');
+            var toastEl = document.getElementById('cartToast');
+            var viewCartBtn = document.getElementById('viewCartBtn');
+
+            function getSession() {
+                try {
+                    return JSON.parse(localStorage.getItem(SESSION_KEY)) || null;
+                } catch (e) {
+                    return null;
+                }
+            }
+
+            function getAccounts() {
+                try {
+                    return JSON.parse(localStorage.getItem(ACCOUNTS_KEY)) || [];
+                } catch (e) {
+                    return [];
+                }
+            }
+
+            function saveAccounts(list) {
+                try {
+                    localStorage.setItem(ACCOUNTS_KEY, JSON.stringify(list));
+                } catch (e) {}
+            }
+
+            function saveSession(user) {
+                try {
+                    localStorage.setItem(SESSION_KEY, JSON.stringify(user));
+                } catch (e) {}
+            }
+
+            function isLoggedIn() {
+                return getSession() !== null;
+            }
+
+            function normalizeEmail(value) {
+                return value.trim().toLowerCase();
+            }
+
+            function normalizePhone(value) {
+                return value.replace(/\D/g, '');
+            }
+
+            function showMessage(message) {
+                toastBodyEl.textContent = message;
+                viewCartBtn.classList.add('d-none');
+                bootstrap.Toast.getOrCreateInstance(toastEl, {
+                    delay: 4000
+                }).show();
+            }
+
+            function renderAuth() {
+                var loggedIn = isLoggedIn();
+                authBtn.textContent = loggedIn ? 'Logout' : 'Sign Up';
+                loginBtn.classList.toggle('d-none', loggedIn);
+            }
+
+            // Login button
+            loginBtn.addEventListener('click', function() {
+                loginError.classList.add('d-none');
+                loginForm.reset();
+                loginModal.show();
+            });
+
+            // Sign Up / Logout button
+            authBtn.addEventListener('click', function() {
+                if (isLoggedIn()) {
+                    try {
+                        localStorage.removeItem(SESSION_KEY);
+                    } catch (e) {}
+                    document.getElementById('clearCart').click();
+                    renderAuth();
+                    showMessage('You have been logged out.');
+                } else {
+                    signupModal.show();
+                }
+            });
+
+            // Create account, save it, and log in
+            signupForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                var user = {
+                    name: document.getElementById('signupName').value.trim(),
+                    email: document.getElementById('signupEmail').value.trim(),
+                    phone: document.getElementById('signupPhone').value.trim(),
+                    createdAt: new Date().toISOString()
+                };
+
+                var accounts = getAccounts();
+                var exists = accounts.some(function(acc) {
+                    return normalizeEmail(acc.email) === normalizeEmail(user.email);
+                });
+
+                if (!exists) {
+                    accounts.push(user);
+                    saveAccounts(accounts);
+                }
+
+                saveSession(user);
+                signupForm.reset();
+                signupModal.hide();
+                renderAuth();
+                showMessage('Welcome, ' + user.name + '! You can now shop with us.');
+            });
+
+            // Log in with an existing account (email + phone must match)
+            loginForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                var email = normalizeEmail(document.getElementById('loginEmail').value);
+                var phone = normalizePhone(document.getElementById('loginPhone').value);
+
+                var match = getAccounts().find(function(acc) {
+                    return normalizeEmail(acc.email) === email && normalizePhone(acc.phone) === phone;
+                });
+
+                if (!match) {
+                    loginError.textContent = 'No account matches this email and phone. Please sign up first.';
+                    loginError.classList.remove('d-none');
+                    return;
+                }
+
+                saveSession(match);
+                loginForm.reset();
+                loginModal.hide();
+                renderAuth();
+                showMessage('Welcome back, ' + match.name + '!');
+            });
+
+            // "Sign up" link inside the login popup
+            goToSignup.addEventListener('click', function(e) {
+                e.preventDefault();
+                loginModal.hide();
+                loginModalEl.addEventListener('hidden.bs.modal', function() {
+                    signupModal.show();
+                }, {
+                    once: true
+                });
+            });
+
+            // GATE: Add to Cart, Buy Now and Checkout need a logged-in user
+            document.addEventListener('click', function(e) {
+                var blocked = e.target.closest('.add-to-cart-btn, .product-details-btn, #checkoutBtn');
+                if (!blocked || isLoggedIn()) return;
+
+                e.preventDefault();
+                e.stopImmediatePropagation();
+                signupModal.show();
+            }, true);
+
+            renderAuth();
+        });
+    </script>
+</body>
+
+</html>
